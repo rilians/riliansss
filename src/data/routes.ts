@@ -89,5 +89,5 @@ export const ROUTE_MAP: Record<string, CareerRoute> = Object.fromEntries(
 export const ROUTE_IDS = ROUTES.map((r) => r.id) as CareerRoute["id"][];
 
 export function isRouteId(value: string | null | undefined): value is CareerRoute["id"] {
-  return !!value && value in ROUTE_MAP;
+  return typeof value === "string" && Object.hasOwn(ROUTE_MAP, value);
 }

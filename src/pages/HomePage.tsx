@@ -57,7 +57,19 @@ export default function HomePage() {
               Personal career portfolio · EST. 2026
             </motion.p>
 
-            <h1 className="mt-6 font-display text-[clamp(2.9rem,7.2vw,5.6rem)] font-bold leading-[0.98] tracking-[-0.03em]">
+            <div className="mt-4 border-l-2 border-signal pl-3">
+              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-ink">
+                {PROFILE.name}
+              </p>
+              <p className="mt-1 font-mono text-[9px] uppercase leading-relaxed tracking-[0.14em] text-muted">
+                {PROFILE.role}
+              </p>
+              <p className="mt-1 font-mono text-[9px] uppercase leading-relaxed tracking-[0.12em] text-ink/75">
+                {PROFILE.availability}
+              </p>
+            </div>
+
+            <h1 className="mt-5 font-display text-[clamp(2.9rem,7.2vw,5.6rem)] font-bold leading-[0.98] tracking-[-0.03em]">
               <span className="line-mask">
                 <motion.span
                   className="line-inner"
@@ -328,7 +340,7 @@ export default function HomePage() {
                   </div>
                   <div className={`md:col-span-5 ${i % 2 === 1 ? "md:order-1" : ""}`}>
                     <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
-                      {p.index} · {p.category} · {p.year}
+                      {p.index} · {p.classification} · {p.year}
                     </p>
                     <h3 className="mt-3 font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
                       {p.title}

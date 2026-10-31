@@ -81,7 +81,7 @@ function CaseStudyRow({ project, flip, trackColor }: { project: Project; flip: b
         <div className={cn("md:col-span-6", flip && "md:order-1")}>
           <p className="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
             <span className="inline-block h-2 w-2" style={{ backgroundColor: trackColor }} aria-hidden />
-            {project.index} · {project.category} · {project.year}
+            {project.index} · {project.classification} · {project.category} · {project.year}
           </p>
           <h3 className="mt-2.5 font-display text-2xl font-bold leading-tight tracking-tight md:text-4xl">
             <Link to={`/work/${project.id}`} className="transition-colors hover:text-signal">
@@ -133,7 +133,7 @@ function RecordRow({ project, trackColor }: { project: Project; trackColor: stri
         <div className="md:col-span-8">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-              {project.index} · {project.category} · {project.year}
+              {project.index} · {project.classification} · {project.category} · {project.year}
             </span>
             <Badges badges={project.badges} />
           </div>

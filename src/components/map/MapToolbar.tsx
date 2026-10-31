@@ -32,7 +32,7 @@ export function RouteFilters({ className }: { className?: string }) {
             aria-pressed={active}
             onClick={() => setRouteFilter(f.id)}
             className={cn(
-              "flex items-center gap-2 border px-3 py-2 font-mono text-[10px] font-medium uppercase tracking-[0.14em] transition-all",
+              "flex min-h-11 items-center gap-2 border px-3 py-2 font-mono text-[10px] font-medium uppercase tracking-[0.14em] transition-all",
               active
                 ? "border-transparent text-paper"
                 : "border-line bg-card text-muted hover:border-ink/40 hover:text-ink",
@@ -207,7 +207,7 @@ export function StationSearch({ className }: { className?: string }) {
                       idx === active ? "text-paper/70" : "text-muted",
                     )}
                   >
-                    {r.project.category}
+                    {r.project.classification}
                   </span>
                 </button>
               );

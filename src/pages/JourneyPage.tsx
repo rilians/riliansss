@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useReducedMotion } from "motion/react";
-import { Navigation, TrainFront } from "lucide-react";
+import { ArrowLeft, Navigation, TrainFront } from "lucide-react";
 import { Page } from "../components/layout/Page";
 import { Container } from "../components/common/primitives";
 import TransitMap from "../components/map/TransitMap";
+import MobileRouteExplorer from "../components/map/MobileRouteExplorer";
 import TimelineView from "../components/timeline/TimelineView";
 import StationPanel from "../components/station/StationPanel";
 import { ModeToggle, RouteFilters, StationSearch } from "../components/map/MapToolbar";
@@ -13,9 +14,11 @@ import { ROUTE_MAP, isRouteId } from "../data/routes";
 import { STATION_MAP, STATIONS } from "../data/stations";
 import { useJourneyStore } from "../store/journey";
 import { cn } from "../lib/utils";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 
 export default function JourneyPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [showFullMap, setShowFullMap] = useState(false);
   const mode = useJourneyStore((s) => s.mode);
   const routeFilter = useJourneyStore((s) => s.routeFilter);
   const selectedStationId = useJourneyStore((s) => s.selectedStationId);
@@ -26,25 +29,28 @@ export default function JourneyPage() {
   const plannerOpen = useJourneyStore((s) => s.plannerOpen);
   const setPlannerOpen = useJourneyStore((s) => s.setPlannerOpen);
   const reduceMotion = useReducedMotion();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   // URL -> store (deep links: ?station= &route= &mode=)
   useEffect(() => {
-    const station = searchParams.get("station");
-    if (station && STATION_MAP[station]) {
-      if (station !== useJourneyStore.getState().selectedStationId) {
-        selectStation(station, { zoom: true });
-      }
+    const routeParam = searchParams.get("route");
+    const route = isRouteId(routeParam) ? routeParam : "all";
+    if (route !== useJourneyStore.getState().routeFilter) setRouteFilter(route);
+
+    const stationId = searchParams.get("station");
+    const station = stationId ? STATION_MAP[stationId] : undefined;
+    const stationMatchesRoute =
+      station && (route === "all" || station.routeIds.includes(route));
+    const selectedStationId = stationMatchesRoute ? stationId : null;
+    const currentStationId = useJourneyStore.getState().selectedStationId;
+    if (selectedStationId !== currentStationId) {
+      selectStation(selectedStationId, { zoom: selectedStationId !== null });
     }
-    const route = searchParams.get("route");
-    if (isRouteId(route) && route !== useJourneyStore.getState().routeFilter) {
-      setRouteFilter(route);
-    }
+
     const urlMode = searchParams.get("mode");
-    if (urlMode === "timeline" && useJourneyStore.getState().mode !== "timeline") {
-      setMode("timeline");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+    const nextMode = urlMode === "timeline" ? "timeline" : "map";
+    if (nextMode !== useJourneyStore.getState().mode) setMode(nextMode);
+  }, [searchParams, selectStation, setMode, setRouteFilter]);
 
   // store -> URL (shareable state). Reads fresh store state so the
   // first mount pass can't race the URL->store effect above and strip
@@ -140,15 +146,40 @@ export default function JourneyPage() {
 
       {/* map / timeline canvas */}
       <Container className="pb-10 pt-4">
-        <div className="relative h-[72dvh] min-h-[440px] border border-ink/20 lg:h-[calc(100dvh-320px)] lg:min-h-[600px]">
-          {mode === "map" ? <TransitMap /> : <TimelineView />}
-          <StationPanel />
-        </div>
-        <p className="mt-3 text-center font-mono text-[9.5px] uppercase tracking-[0.2em] text-muted">
-          {mode === "map"
-            ? "Drag to pan · scroll or pinch to zoom · click a station for the full story"
-            : "Scroll the service log · open a station to switch to map focus"}
-        </p>
+        {!isDesktop && mode === "map" && showFullMap && (
+          <button
+            type="button"
+            onClick={() => setShowFullMap(false)}
+            className="mb-3 inline-flex min-h-11 items-center gap-2 border border-ink/25 px-3 font-mono text-[10px] font-medium uppercase tracking-[0.16em] transition-colors hover:border-ink hover:bg-card"
+          >
+            <ArrowLeft size={14} aria-hidden /> Back to route explorer
+          </button>
+        )}
+        {mode === "map" && !isDesktop && !showFullMap ? (
+          <>
+            <MobileRouteExplorer onViewFullMap={() => setShowFullMap(true)} />
+            <StationPanel />
+          </>
+        ) : (
+          <div
+            className={cn(
+              "relative border border-ink/20",
+              isDesktop
+                ? "h-[calc(100dvh-320px)] min-h-[600px]"
+                : "h-[72dvh] min-h-[440px] max-h-[760px]",
+            )}
+          >
+            {mode === "map" ? <TransitMap /> : <TimelineView />}
+            <StationPanel />
+          </div>
+        )}
+        {(mode === "timeline" || isDesktop || showFullMap) && (
+          <p className="mt-3 text-center font-mono text-[9.5px] uppercase tracking-[0.2em] text-muted">
+            {mode === "map"
+              ? "Drag to pan · scroll or pinch to zoom · click a station for the full story"
+              : "Scroll the service log · open a station to switch to map focus"}
+          </p>
+        )}
       </Container>
     </Page>
   );

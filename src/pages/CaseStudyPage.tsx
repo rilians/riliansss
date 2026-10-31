@@ -1,11 +1,11 @@
 import { Link, useParams } from "react-router-dom";
+import { useEffect } from "react";
 import { ArrowLeft, ArrowRight, ExternalLink, Github, Target } from "lucide-react";
 import { Page } from "../components/layout/Page";
 import { Container, Reveal, RouteChip } from "../components/common/primitives";
 import SectionRail, { type RailSection } from "../components/common/SectionRail";
 import { getAdjacentProjects, PROJECT_MAP } from "../data/projects";
 import { TRACK_MAP } from "../data/tracks";
-import { ROUTE_MAP } from "../data/routes";
 import NotFoundPage from "./NotFoundPage";
 import type { ReactNode } from "react";
 
@@ -41,9 +41,47 @@ function Section({
 export default function CaseStudyPage() {
   const { projectId } = useParams();
   const project = projectId ? PROJECT_MAP[projectId] : undefined;
+  useEffect(() => {
+    if (!project) return;
+
+    const title = `${project.title} — Egi Apriliansyah | LIFE IN ROUTES`;
+    const description = project.summary.slice(0, 160);
+    const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    const previousUrl = canonical?.href;
+    const setMeta = (selector: string, value: string) =>
+      document.querySelector(selector)?.setAttribute("content", value);
+
+    document.title = title;
+    setMeta('meta[name="description"]', description);
+    setMeta('meta[property="og:title"]', title);
+    setMeta('meta[property="og:description"]', description);
+    setMeta('meta[property="og:url"]', `${window.location.origin}${window.location.pathname}`);
+    setMeta('meta[name="twitter:title"]', title);
+    setMeta('meta[name="twitter:description"]', description);
+    if (canonical) canonical.href = `${window.location.origin}${window.location.pathname}`;
+
+    return () => {
+      document.title = "Egi Apriliansyah — LIFE IN ROUTES";
+      setMeta(
+        'meta[name="description"]',
+        "The interactive career portfolio of Egi Apriliansyah — Informatics Engineering graduate in project coordination, business analysis and IT operations — mapped as a metropolitan transit network.",
+      );
+      setMeta('meta[property="og:title"]', "Egi Apriliansyah — LIFE IN ROUTES");
+      setMeta(
+        'meta[property="og:description"]',
+        "A career drawn as a metro map: 15 stations, 4 lines, rideable trains. The interactive portfolio of Egi Apriliansyah.",
+      );
+      setMeta('meta[property="og:url"]', "https://riliansss.vercel.app/");
+      setMeta('meta[name="twitter:title"]', "Egi Apriliansyah — LIFE IN ROUTES");
+      setMeta(
+        'meta[name="twitter:description"]',
+        "A career drawn as a metro map: 15 stations, 4 lines, rideable trains.",
+      );
+      if (canonical && previousUrl) canonical.href = previousUrl;
+    };
+  }, [project]);
   if (!project) return <NotFoundPage />;
 
-  const route = ROUTE_MAP[project.routeId];
   const track = TRACK_MAP[project.track];
   const { prev, next } = getAdjacentProjects(project.id);
 
@@ -159,7 +197,7 @@ export default function CaseStudyPage() {
             Line {track?.code} · {project.index}
           </span>
           <span className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-muted">
-            {project.category} · {project.year}
+            {project.classification} · {project.category} · {project.year}
           </span>
           {project.badges?.map((b) => (
             <span
@@ -210,6 +248,15 @@ export default function CaseStudyPage() {
             </div>
           ))}
         </div>
+
+        {project.id === "signal-room" && (
+          <aside
+            role="note"
+            className="mt-5 border-2 border-express bg-card px-4 py-3 font-mono text-[10px] font-semibold uppercase leading-relaxed tracking-[0.12em] text-ink sm:text-[11px]"
+          >
+            Simulated demo data — not actual client campaign results
+          </aside>
+        )}
       </Container>
 
       {/* hero image */}

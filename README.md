@@ -24,12 +24,19 @@ npm install
 npm run dev        # http://localhost:5173
 ```
 
+GitHub Actions runs lint, type-check, unit tests, production build, and the
+Playwright browser suite on pushes and pull requests. Install Chromium locally
+with `npx playwright install chromium` before running `npm run test:e2e`.
+
 | Command              | What it does                                     |
 | -------------------- | ------------------------------------------------ |
 | `npm run dev`        | Development server with HMR                      |
 | `npm run build`      | Type-check + production build (`dist/`)          |
 | `npm run preview`    | Serve the production build locally               |
 | `npm run typecheck`  | TypeScript only                                  |
+| `npm run lint`       | ESLint checks for application and tests          |
+| `npm test`           | Journey state and route-interchange unit tests   |
+| `npm run test:e2e`   | Browser checks for recruiter and mobile flows   |
 | `npm run render:map` | Rasterize the network schematic to PNG (QA aid)  |
 
 Deploying to Vercel: `vercel.json` already rewrites all routes to `index.html`.
@@ -75,9 +82,8 @@ Zero config needed.
 - **Door chime (opt-in)** — a soft synthesised "ding-dong" when the train
   doors open at each stop; muted by default, preference remembered
 - **Social share pack** — a generated 1200×630 OG image (the network
-  redrawn editorially from the same route data), Twitter card, and
-  apple-touch icon; swap the absolute URLs in `index.html` to the final
-  domain right after deploying
+  redrawn editorially from the same route data), absolute Open Graph/Twitter
+  image URLs, canonical URL, image alt text, and apple-touch icon
 - **Print stylesheet** — pages collapse to clean paper documents: site
   chrome, map controls and interactive layers drop out, reveal animations
   print fully opaque, solid buttons become outlined
@@ -85,6 +91,10 @@ Zero config needed.
   tabular timetable (period, line chips, station, service note) with a
   *Board* action per row that jumps to the map with that station open
 - Route filtering with emphasis + dimming and an animated traveling marker
+- Mobile route explorer: four chronological vertical line lists, tap-to-open
+  station sheets, and an explicit full-schematic map option
+- Route changes clear incompatible station selections and preserve valid
+  interchange selections; shareable station/route/mode URLs stay synchronized
 - Station search (name, category, route, skill, story) with fly-to selection
 - Story panel: Context → Challenge → Journey → Outcome, related skills,
   related projects, nearby stations, prev/next, copy-share-link
@@ -100,8 +110,10 @@ Zero config needed.
   **Line P — Python & Data Systems** (6: NusaOps, Valido, Opis, Navigo,
   Vanguardia, Axon), **Line D — Design & Editorial** (3: Alexander, Brighton,
   Ciel — The Phantomhive Archive). Every entry shows its story, live demo and
-  repository; deep case studies for the flagship six, rich records for the
-  rest — each with its own shareable `/work/:id` page.
+  repository; consistent labels distinguish freelance/client work,
+  independent builds, experimental studies, and fan concepts. SIGNAL ROOM
+  visibly identifies its simulated metrics; deep case studies and screenshots
+  remain intact.
 - About page: highlights band (25 committee · IDR 45M · 500+ · GPA 3.61),
   real portrait & photo frames, approach, skill clusters, verifiable
   certifications (Credly/SCRUMstudy/UniAthena links), education, interests
@@ -138,7 +150,7 @@ src/
 ├── components/
 │   ├── common/primitives   # Reveal, SectionHead, RouteChip, ArrowLink…
 │   ├── layout/             # Navbar, Footer, Page, CommandPalette
-│   ├── map/                # TransitMap, NetworkGraphic, MiniMap, MapLegend, MapToolbar
+│   ├── map/                # TransitMap, mobile explorer, NetworkGraphic, MiniMap, controls
 │   ├── station/            # StationPanel (inspector / bottom sheet)
 │   └── timeline/           # TimelineView
 ├── data/                   # ← ALL CONTENT (routes, stations, projects, profile)

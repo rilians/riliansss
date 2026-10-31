@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
@@ -31,7 +31,6 @@ export default function StationPanel() {
   const setPlannerOpen = useJourneyStore((s) => s.setPlannerOpen);
   const setPlanTo = useJourneyStore((s) => s.setPlanTo);
   const navigate = useNavigate();
-  const location = useLocation();
   const [copied, setCopied] = useState(false);
 
   const station = selectedId ? STATION_MAP[selectedId] : undefined;
@@ -112,7 +111,7 @@ export default function StationPanel() {
                   setPlannerOpen(true);
                   selectStation(null);
                 }}
-                className="flex h-8 w-8 items-center justify-center border border-line text-muted transition-colors hover:border-ink hover:text-ink"
+                className="flex h-11 w-11 items-center justify-center border border-line text-muted transition-colors hover:border-ink hover:text-ink lg:h-8 lg:w-8"
                 aria-label={`Plan a route to ${station.name}`}
                 title="Plan a route to this station"
               >
@@ -121,7 +120,7 @@ export default function StationPanel() {
               <button
                 type="button"
                 onClick={share}
-                className="flex h-8 w-8 items-center justify-center border border-line text-muted transition-colors hover:border-ink hover:text-ink"
+                className="flex h-11 w-11 items-center justify-center border border-line text-muted transition-colors hover:border-ink hover:text-ink lg:h-8 lg:w-8"
                 aria-label="Copy link to this station"
               >
                 {copied ? <Check size={14} aria-hidden /> : <Link2 size={14} aria-hidden />}
@@ -129,7 +128,7 @@ export default function StationPanel() {
               <button
                 type="button"
                 onClick={() => selectStation(null)}
-                className="flex h-8 w-8 items-center justify-center border border-line text-muted transition-colors hover:border-ink hover:text-ink"
+                className="flex h-11 w-11 items-center justify-center border border-line text-muted transition-colors hover:border-ink hover:text-ink lg:h-8 lg:w-8"
                 aria-label="Close station details"
               >
                 <X size={15} aria-hidden />
@@ -197,7 +196,7 @@ export default function StationPanel() {
                             <span className="min-w-0 flex-1">
                               <span className="block truncate text-sm font-medium">{p.title}</span>
                               <span className="block font-mono text-[9.5px] uppercase tracking-[0.14em] text-muted">
-                                {p.category}
+                                {p.classification}
                               </span>
                             </span>
                             <ArrowRight size={14} className="shrink-0 text-muted transition-transform group-hover:translate-x-0.5" aria-hidden />

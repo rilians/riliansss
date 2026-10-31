@@ -2,6 +2,12 @@ export type RouteId = "build" | "connect" | "support" | "explore";
 
 /** Technology tracks used by the Selected Works gallery. */
 export type TrackId = "react" | "python" | "design";
+export type ProjectClassification =
+  | "Freelance / Client Work"
+  | "Academic Project"
+  | "Independent Build"
+  | "Concept / Experimental Study"
+  | "Fan Concept / Unofficial Study";
 
 export type StationType = "regular" | "interchange" | "terminal" | "transfer";
 
@@ -66,6 +72,7 @@ export interface Project {
   index: string;
   title: string;
   category: string;
+  classification: ProjectClassification;
   year: string;
   role: string;
   status: string;

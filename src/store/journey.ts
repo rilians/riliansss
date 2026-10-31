@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { STATION_MAP } from "../data/stations";
 import type { RouteId } from "../types";
 
 export type JourneyMode = "map" | "timeline";
@@ -54,7 +55,23 @@ export const useJourneyStore = create<JourneyState>()((set) => ({
     set((s) => ({ planFromId: s.planToId, planToId: s.planFromId })),
   clearPlan: () => set({ planFromId: null, planToId: null }),
   setMode: (mode) => set({ mode }),
-  setRouteFilter: (routeFilter) => set({ routeFilter }),
+  setRouteFilter: (routeFilter) =>
+    set((state) => {
+      if (routeFilter === "all") return { routeFilter };
+
+      const selectedStation = state.selectedStationId
+        ? STATION_MAP[state.selectedStationId]
+        : undefined;
+      if (selectedStation && !selectedStation.routeIds.includes(routeFilter)) {
+        return {
+          routeFilter,
+          selectedStationId: null,
+          zoomRequest: null,
+        };
+      }
+
+      return { routeFilter };
+    }),
   selectStation: (id, opts) =>
     set((state) => ({
       selectedStationId: id,

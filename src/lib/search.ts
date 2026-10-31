@@ -43,6 +43,7 @@ export function searchProjects(query: string, limit = 4): ProjectResult[] {
     const haystack = [
       project.title,
       project.category,
+      project.classification,
       project.summary,
       ...project.stack,
     ]

@@ -79,7 +79,7 @@ export default function CommandPalette() {
       id: `project-${p.id}`,
       kind: "project",
       label: p.title,
-      meta: `${p.index} · ${p.category}`,
+      meta: `${p.index} · ${p.classification}`,
       to: `/work/${p.id}`,
     }));
     return [...PAGES, ...routeItems, ...stationItems, ...projectItems];

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { DoorOpen, ImageDown, Loader2, Minus, Plus, RotateCcw, TrainFront, Volume2, VolumeX, X } from "lucide-react";
+import { DoorOpen, ImageDown, Loader2, Minus, MoreHorizontal, Plus, RotateCcw, TrainFront, Volume2, VolumeX, X } from "lucide-react";
 import { MAP_H, MAP_W, ROUTES, ROUTE_MAP } from "../../data/routes";
 import { STATION_MAP } from "../../data/stations";
 import { useJourneyStore } from "../../store/journey";
@@ -77,10 +77,6 @@ export default function TransitMap() {
 
   const plan = useMemo(() => planRoute(planFromId, planToId), [planFromId, planToId]);
   const planLegs = plan?.legs ?? [];
-  const planStations = useMemo(
-    () => (plan ? new Set(plan.nodeIds) : null),
-    [plan],
-  );
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [ref_, setRefReadout] = useState("—");
   const [ride, setRide] = useState<RideState | null>(null);
@@ -92,6 +88,7 @@ export default function TransitMap() {
     }
   });
   const [posterBusy, setPosterBusy] = useState(false);
+  const [extrasOpen, setExtrasOpen] = useState(false);
   const posterRef = useRef<SVGSVGElement | null>(null);
   const trainRef = useRef<SVGGElement | null>(null);
   const trailRefs = useRef<Array<SVGCircleElement | null>>([]);
@@ -501,12 +498,12 @@ export default function TransitMap() {
         REF {ref_} · ZOOM {Math.round(t.k * 100)}%
       </div>
 
-      {/* Zoom + ride controls */}
-      <div className="no-print absolute bottom-3 right-3 flex flex-col gap-1.5">
+      {/* Primary navigation stays visible; optional preferences live in the menu. */}
+      <div className="no-print absolute bottom-3 right-3 z-10 flex flex-col gap-1.5">
         <button
           type="button"
           onClick={() => zoomBy(1.4)}
-          className="flex h-10 w-10 items-center justify-center border border-ink/20 bg-card/95 text-ink transition-colors hover:border-ink"
+          className="flex h-11 w-11 items-center justify-center border border-ink/20 bg-card/95 text-ink transition-colors hover:border-ink"
           aria-label="Zoom in"
         >
           <Plus size={16} aria-hidden />
@@ -514,7 +511,7 @@ export default function TransitMap() {
         <button
           type="button"
           onClick={() => zoomBy(1 / 1.4)}
-          className="flex h-10 w-10 items-center justify-center border border-ink/20 bg-card/95 text-ink transition-colors hover:border-ink"
+          className="flex h-11 w-11 items-center justify-center border border-ink/20 bg-card/95 text-ink transition-colors hover:border-ink"
           aria-label="Zoom out"
         >
           <Minus size={16} aria-hidden />
@@ -522,7 +519,7 @@ export default function TransitMap() {
         <button
           type="button"
           onClick={fitNetwork}
-          className="flex h-10 w-10 items-center justify-center border border-ink/20 bg-card/95 text-ink transition-colors hover:border-ink"
+          className="flex h-11 w-11 items-center justify-center border border-ink/20 bg-card/95 text-ink transition-colors hover:border-ink"
           aria-label="Fit the whole network to the view"
         >
           <RotateCcw size={15} aria-hidden />
@@ -539,7 +536,7 @@ export default function TransitMap() {
               : `Ride the ${ROUTE_MAP[routeFilter]?.name} line`
           }
           className={cn(
-            "flex h-10 w-10 items-center justify-center border transition-colors",
+            "flex h-11 w-11 items-center justify-center border transition-colors",
             routeFilter === "all" || reduceMotion
               ? "cursor-not-allowed border-ink/10 bg-card/60 text-muted/50"
               : "border-ink/20 bg-card/95 text-ink hover:border-ink hover:bg-ink hover:text-paper",
@@ -552,35 +549,43 @@ export default function TransitMap() {
         >
           <TrainFront size={15} aria-hidden />
         </button>
-        <button
-          type="button"
-          onClick={toggleChime}
-          aria-pressed={chimeOn}
-          title={chimeOn ? "Door chime on — click to mute" : "Door chime off — click to enable"}
-          className={cn(
-            "flex h-10 w-10 items-center justify-center border transition-colors",
-            chimeOn
-              ? "border-ink bg-ink text-paper"
-              : "border-ink/20 bg-card/95 text-ink hover:border-ink",
+        <div className="relative">
+          {extrasOpen && (
+            <div className="absolute bottom-[calc(100%+6px)] right-0 w-52 border border-ink/20 bg-card p-1.5 shadow-lg">
+              <button
+                type="button"
+                onClick={toggleChime}
+                aria-pressed={chimeOn}
+                className="flex min-h-11 w-full items-center gap-3 px-3 text-left font-mono text-[9px] uppercase tracking-[0.12em] text-ink transition-colors hover:bg-paper"
+              >
+                {chimeOn ? <Volume2 size={14} aria-hidden /> : <VolumeX size={14} aria-hidden />}
+                Door chime {chimeOn ? "on" : "off"}
+              </button>
+              <button
+                type="button"
+                onClick={onDownloadPoster}
+                disabled={posterBusy}
+                className="flex min-h-11 w-full items-center gap-3 px-3 text-left font-mono text-[9px] uppercase tracking-[0.12em] text-ink transition-colors hover:bg-paper disabled:opacity-50"
+              >
+                {posterBusy ? (
+                  <Loader2 size={14} className="animate-spin" aria-hidden />
+                ) : (
+                  <ImageDown size={14} aria-hidden />
+                )}
+                Download poster
+              </button>
+            </div>
           )}
-          aria-label={chimeOn ? "Mute the door chime" : "Enable the door chime"}
-        >
-          {chimeOn ? <Volume2 size={15} aria-hidden /> : <VolumeX size={15} aria-hidden />}
-        </button>
-        <button
-          type="button"
-          onClick={onDownloadPoster}
-          disabled={posterBusy}
-          title="Download the network poster (PNG)"
-          className="flex h-10 w-10 items-center justify-center border border-ink/20 bg-card/95 text-ink transition-colors hover:border-ink disabled:opacity-50"
-          aria-label="Download the network poster as a PNG image"
-        >
-          {posterBusy ? (
-            <Loader2 size={15} className="animate-spin" aria-hidden />
-          ) : (
-            <ImageDown size={15} aria-hidden />
-          )}
-        </button>
+          <button
+            type="button"
+            onClick={() => setExtrasOpen((open) => !open)}
+            aria-expanded={extrasOpen}
+            aria-label="Map options"
+            className="flex h-11 w-11 items-center justify-center border border-ink/20 bg-card/95 text-ink transition-colors hover:border-ink"
+          >
+            <MoreHorizontal size={17} aria-hidden />
+          </button>
+        </div>
       </div>
 
       {/* Hidden poster source (rasterised on demand) */}

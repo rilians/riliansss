@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { ROUTES } from "../../data/routes";
-import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { cn } from "../../lib/utils";
 
 function KeyRegular() {
@@ -37,9 +36,7 @@ function KeyTransfer() {
 }
 
 export default function MapLegend() {
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const [open, setOpen] = useState<boolean | null>(null);
-  const isOpen = open === null ? isDesktop : open;
+  const [isOpen, setOpen] = useState(false);
 
   return (
     <div className="no-print absolute bottom-3 left-3 z-10">
@@ -58,7 +55,7 @@ export default function MapLegend() {
       </button>
 
       {isOpen && (
-        <div className="w-[215px] border border-ink/15 bg-card/95 p-4">
+        <div className="w-[min(215px,calc(100vw-2rem))] border border-ink/15 bg-card p-4 shadow-lg">
           <p className="meta-label">Lines</p>
           <ul className="mt-3 space-y-2.5">
             {ROUTES.map((r) => (
