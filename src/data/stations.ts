@@ -84,6 +84,8 @@ const STATION_RECORDS: CareerStation[] = [
   },
   {
     id: "misi-warga",
+    publishedAt: "2026-06-16T16:00:00Z",
+    publicationSource: "github-repository-created",
     code: "ST-04",
     name: "Misi Warga Cilik",
     type: "terminal",
@@ -236,6 +238,8 @@ const STATION_RECORDS: CareerStation[] = [
   },
   {
     id: "nusaops",
+    publishedAt: "2026-10-29T14:42:24Z",
+    publicationSource: "github-repository-created",
     code: "ST-10",
     name: "NusaOps",
     type: "regular",
@@ -260,6 +264,8 @@ const STATION_RECORDS: CareerStation[] = [
   },
   {
     id: "opis",
+    publishedAt: "2026-10-30T06:57:51Z",
+    publicationSource: "github-repository-created",
     code: "ST-11",
     name: "Opis",
     type: "terminal",
@@ -312,6 +318,8 @@ const STATION_RECORDS: CareerStation[] = [
   },
   {
     id: "data-tools",
+    publishedAt: "2026-10-29T23:55:45Z",
+    publicationSource: "github-repository-created",
     code: "ST-13",
     name: "Data & Ops Tooling",
     type: "transfer",
@@ -336,6 +344,8 @@ const STATION_RECORDS: CareerStation[] = [
   },
   {
     id: "creative-coding",
+    publishedAt: "2026-10-31T06:41:04Z",
+    publicationSource: "github-repository-created",
     code: "ST-14",
     name: "Creative Coding",
     type: "regular",
@@ -360,6 +370,8 @@ const STATION_RECORDS: CareerStation[] = [
   },
   {
     id: "life-in-routes",
+    publishedAt: "2026-10-31T20:14:52Z",
+    publicationSource: "github-repository-created",
     code: "ST-15",
     name: "Life in Routes",
     type: "terminal",

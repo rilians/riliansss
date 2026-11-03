@@ -24,21 +24,26 @@ export default function LivingNetwork() {
   const { status, data, load } = useAnalytics();
   useEffect(() => { void load(); }, [load]);
   const latest = latestStations(STATIONS).slice(0, 4);
+  // Editorial suggestions are deliberately separate from actual analytics.
+  const suggestions = ["life-in-routes", "misi-warga", "nusaops", "data-tools", "creative-coding"]
+    .map((id) => STATION_MAP[id]).filter(Boolean);
+  const discoveries = ["creative-coding", "data-tools", "opis"]
+    .map((id) => STATION_MAP[id]).filter(Boolean);
   const empty = status === "loading" ? "Loading network activity…" : status === "unavailable" ? "Network activity is currently unavailable." : "THE NETWORK IS STILL BEING EXPLORED.";
   return <section className="border-b border-line"><Container className="py-20 md:py-28">
     <p className="mb-8 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">Life in Routes — A Living Network</p>
     <div className="grid gap-16 lg:grid-cols-2 lg:gap-20">
       <Reveal><Heading eyebrow="The network is growing" title="Latest Arrivals." text="New stations recently added to the network." />
-        <div className="mt-7">{latest.length ? latest.map((station) => <div key={station.id}><StationLink station={station} detail={`NEW · ${new Date(station.publishedAt!).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}`} /><p className="-mt-2 mb-5 pl-5 text-sm text-ink/70">{station.short}</p></div>) : <p className="border-t border-line py-6 font-mono text-xs text-muted">No new stations in the last 30 days. The network continues to grow.</p>}</div>
+        <div className="mt-7">{latest.length ? latest.map((station) => <div key={station.id}><StationLink station={station} detail={`NEW · ${new Date(station.publishedAt!).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}${station.publicationSource ? " · Repository created" : ""}`} /><p className="-mt-2 mb-5 pl-5 text-sm text-ink/70">{station.short}</p></div>) : <p className="border-t border-line py-6 font-mono text-xs text-muted">No new stations in the last 30 days. The network continues to grow.</p>}</div>
         <Link to="/journey?filter=new" className="inline-block border-b border-ink py-2 font-mono text-[10px] uppercase tracking-[0.16em]">View all ↗</Link>
       </Reveal>
       <Reveal><Heading eyebrow="Visitor favorites" title="Most Explored." text="Stations receiving the most exploration across the network." />
         <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted">Last 30 days · unique visitors</p>
-        <div className="mt-3">{status === "ready" && data.popular.length ? data.popular.map((item, index) => <div className="flex gap-4" key={item.station_id}><span className="pt-5 font-mono text-xs text-muted">{String(index + 1).padStart(2, "0")}</span><div className="flex-1"><StationLink station={STATION_MAP[item.station_id]} detail={`${item.visitors} visitors`} /></div></div>) : <p className="border-t border-line py-6 font-mono text-xs text-muted">{empty}</p>}</div>
+        <div className="mt-3">{status === "ready" && data.popular.length ? data.popular.map((item, index) => <div className="flex gap-4" key={item.station_id}><span className="pt-5 font-mono text-xs text-muted">{String(index + 1).padStart(2, "0")}</span><div className="flex-1"><StationLink station={STATION_MAP[item.station_id]} detail={`${item.visitors} visitors`} /></div></div>) : <><p className="border-t border-line py-4 font-mono text-xs text-muted">{empty}</p><p className="mb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-muted">Editor's picks · not visitor rankings</p>{suggestions.map((station) => <StationLink key={station.id} station={station} />)}</>}</div>
       </Reveal>
     </div>
     <div className="mt-20 border-t border-line pt-10"><Reveal><Heading eyebrow="What's moving through the network" title="Trending Now." text="Stations gaining attention across the network." />
-      <div className="mt-7 grid gap-x-8 md:grid-cols-3">{status === "ready" && data.trending.length ? data.trending.map((item) => <StationLink key={item.station_id} station={STATION_MAP[item.station_id]} detail={item.previous_visitors === 0 ? "↗ Newly trending" : `↗ +${item.increase} visitors · +${Math.round(item.growth ?? 0)}%`} />) : <p className="border-t border-line py-6 font-mono text-xs text-muted">{status === "ready" ? "NO MAJOR MOVEMENT YET." : empty}</p>}</div>
+      <div className="mt-7 grid gap-x-8 md:grid-cols-3">{status === "ready" && data.trending.length ? data.trending.map((item) => <StationLink key={item.station_id} station={STATION_MAP[item.station_id]} detail={item.previous_visitors === 0 ? "↗ Newly trending" : `↗ +${item.increase} visitors · +${Math.round(item.growth ?? 0)}%`} />) : <div className="md:col-span-3"><p className="border-t border-line py-4 font-mono text-xs text-muted">{status === "ready" ? "NO MAJOR MOVEMENT YET." : empty}</p><p className="mb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-muted">Worth discovering · editorial picks, not trends</p><div className="grid gap-x-8 md:grid-cols-3">{discoveries.map((station) => <StationLink key={station.id} station={station} />)}</div></div>}</div>
     </Reveal></div>
   </Container></section>;
 }

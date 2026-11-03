@@ -34,6 +34,8 @@ export interface CareerStation {
   status?: "draft" | "published";
   createdAt?: string;
   publishedAt?: string;
+  /** Provenance when a station publication date is approximated from a public repository. */
+  publicationSource?: "github-repository-created";
   isFeatured?: boolean;
   /** Station code, e.g. "ST-01" */
   code: string;
