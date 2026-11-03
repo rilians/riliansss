@@ -6,7 +6,7 @@ import { ROUTES } from "./routes";
  * Every story below is drawn from his portfolio, résumé and public
  * repositories (github.com/rilians). Update this file to add new stations.
  */
-export const STATIONS: CareerStation[] = [
+const STATION_RECORDS: CareerStation[] = [
   // ------------------------------------------------------------------
   // ROUTE 01 — BUILD
   // ------------------------------------------------------------------
@@ -84,6 +84,8 @@ export const STATIONS: CareerStation[] = [
   },
   {
     id: "misi-warga",
+    publishedAt: "2026-06-16T16:00:00Z",
+    publicationSource: "github-repository-created",
     code: "ST-04",
     name: "Misi Warga Cilik",
     type: "terminal",
@@ -236,6 +238,8 @@ export const STATIONS: CareerStation[] = [
   },
   {
     id: "nusaops",
+    publishedAt: "2026-10-29T14:42:24Z",
+    publicationSource: "github-repository-created",
     code: "ST-10",
     name: "NusaOps",
     type: "regular",
@@ -260,6 +264,8 @@ export const STATIONS: CareerStation[] = [
   },
   {
     id: "opis",
+    publishedAt: "2026-10-30T06:57:51Z",
+    publicationSource: "github-repository-created",
     code: "ST-11",
     name: "Opis",
     type: "terminal",
@@ -312,6 +318,8 @@ export const STATIONS: CareerStation[] = [
   },
   {
     id: "data-tools",
+    publishedAt: "2026-10-29T23:55:45Z",
+    publicationSource: "github-repository-created",
     code: "ST-13",
     name: "Data & Ops Tooling",
     type: "transfer",
@@ -336,6 +344,8 @@ export const STATIONS: CareerStation[] = [
   },
   {
     id: "creative-coding",
+    publishedAt: "2026-10-31T06:41:04Z",
+    publicationSource: "github-repository-created",
     code: "ST-14",
     name: "Creative Coding",
     type: "regular",
@@ -360,6 +370,8 @@ export const STATIONS: CareerStation[] = [
   },
   {
     id: "life-in-routes",
+    publishedAt: "2026-10-31T20:14:52Z",
+    publicationSource: "github-repository-created",
     code: "ST-15",
     name: "Life in Routes",
     type: "terminal",
@@ -383,6 +395,28 @@ export const STATIONS: CareerStation[] = [
     projectIds: [],
   },
 ];
+
+// Legacy records are published, but deliberately have no invented publication date.
+export const STATIONS: CareerStation[] = STATION_RECORDS
+  .filter((station) => station.status !== "draft")
+  .map((station) => ({ ...station, slug: station.slug ?? station.id, status: "published" }));
+
+// Preserve the curated service order, append newly registered stops automatically,
+// and remove unpublished stops from every public route.
+for (const route of ROUTES) {
+  route.stationIds = route.stationIds.filter((id) => STATIONS.some((s) => s.id === id));
+  for (const station of STATIONS) {
+    if (station.routeIds.includes(route.id) && !route.stationIds.includes(station.id)) route.stationIds.push(station.id);
+  }
+}
+
+const ids = new Set<string>();
+const slugs = new Set<string>();
+for (const station of STATION_RECORDS) {
+  const slug = station.slug ?? station.id;
+  if (ids.has(station.id) || slugs.has(slug)) throw new Error(`Duplicate station id or slug: ${station.id}`);
+  ids.add(station.id); slugs.add(slug);
+}
 
 export const STATION_MAP: Record<string, CareerStation> = Object.fromEntries(
   STATIONS.map((s) => [s.id, s]),

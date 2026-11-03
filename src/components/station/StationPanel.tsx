@@ -1,3 +1,4 @@
+import { trackStation } from "../../lib/analytics";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
@@ -34,6 +35,8 @@ export default function StationPanel() {
   const [copied, setCopied] = useState(false);
 
   const station = selectedId ? STATION_MAP[selectedId] : undefined;
+
+  useEffect(() => { if (station) void trackStation(station.id); }, [station]);
 
   // Esc closes the panel.
   useEffect(() => {

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { STATION_MAP } from "../data/stations";
 import type { RouteId } from "../types";
 
+export type InterestFilter = "all" | "new" | "popular" | "trending";
 export type JourneyMode = "map" | "timeline";
 export type RouteFilter = RouteId | "all";
 
@@ -16,6 +17,8 @@ interface RideRequest {
 }
 
 interface JourneyState {
+  interestFilter: InterestFilter;
+  setInterestFilter: (filter: InterestFilter) => void;
   mode: JourneyMode;
   routeFilter: RouteFilter;
   selectedStationId: string | null;
@@ -40,6 +43,8 @@ interface JourneyState {
 }
 
 export const useJourneyStore = create<JourneyState>()((set) => ({
+  interestFilter: "all",
+  setInterestFilter: (interestFilter) => set({ interestFilter }),
   mode: "map",
   routeFilter: "all",
   selectedStationId: null,

@@ -23,6 +23,8 @@ export interface NetworkGraphicProps {
   onSelect?: (s: CareerStation, e?: React.MouseEvent) => void;
   onHover?: (s: CareerStation | null) => void;
   /** Ref collector for route paths (used by the traveling-train marker). */
+  interestIds?: Set<string> | null;
+  interestLabel?: string;
   registerTrainPath?: (routeId: RouteId, el: SVGPathElement | null) => void;
 }
 
@@ -53,6 +55,7 @@ function StationNode({
   onHover,
   appearDelay,
   animated,
+  indicator,
 }: {
   station: CareerStation;
   color: string;
@@ -67,13 +70,14 @@ function StationNode({
   onHover?: (s: CareerStation | null) => void;
   appearDelay: number;
   animated: boolean;
+  indicator?: string;
 }) {
   const off = LABEL_OFFSET[station.labelPos];
   const handleClick = (e: React.MouseEvent) => {
     if (interactive && onSelect) onSelect(station, e);
   };
   const handleKey = (e: React.KeyboardEvent) => {
-    if (!interactive) return;
+    if (!interactive || dimmed) return;
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       onSelect?.(station);
@@ -87,7 +91,7 @@ function StationNode({
       }${animated ? " station-pop" : ""}`}
       transform={`translate(${station.x} ${station.y}) scale(${1 / k})`}
       style={{ opacity: dimmed ? 0.14 : 1, pointerEvents: dimmed ? "none" : undefined }}
-      tabIndex={interactive ? 0 : undefined}
+      tabIndex={interactive && !dimmed ? 0 : undefined}
       role={interactive ? "button" : undefined}
       aria-label={
         interactive
@@ -183,7 +187,7 @@ function StationNode({
           textAnchor={off.anchor}
           dominantBaseline="middle"
         >
-          {station.name.toUpperCase()}
+          {station.name.toUpperCase()}{indicator ? ` · ${indicator}` : ""}
         </text>
       )}
       {/* transparent hit area for reliable taps */}
@@ -207,6 +211,8 @@ export default function NetworkGraphic({
   onSelect,
   onHover,
   registerTrainPath,
+  interestIds = null,
+  interestLabel = "",
 }: NetworkGraphicProps) {
   const reduceMotion = useReducedMotion();
   const animate = animated && !reduceMotion;
@@ -247,6 +253,7 @@ export default function NetworkGraphic({
   };
 
   const stationDimmed = (s: CareerStation): boolean => {
+    if (interestIds && !interestIds.has(s.id)) return true;
     if (planActive) return !planFocus.stations.includes(s.id);
     if (rideActive) return !s.routeIds.includes(rideRouteId);
     if (routeFilter !== "all" && !s.routeIds.includes(routeFilter)) return true;
@@ -412,6 +419,7 @@ export default function NetworkGraphic({
         const color = ROUTE_MAP[s.routeIds[0]]?.color ?? "var(--color-ink)";
         return (
           <StationNode
+              indicator={interestIds?.has(s.id) ? interestLabel : undefined}
             key={s.id}
             station={s}
             color={color}
