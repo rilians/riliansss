@@ -29,6 +29,12 @@ export interface CareerRoute {
 
 export interface CareerStation {
   id: string;
+  /** Defaults to the existing id for legacy stations. */
+  slug?: string;
+  status?: "draft" | "published";
+  createdAt?: string;
+  publishedAt?: string;
+  isFeatured?: boolean;
   /** Station code, e.g. "ST-01" */
   code: string;
   name: string;

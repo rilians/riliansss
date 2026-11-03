@@ -1,3 +1,4 @@
+import LivingNetwork from "../components/living/LivingNetwork";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowRight, ArrowUpRight, Download } from "lucide-react";
@@ -307,6 +308,8 @@ export default function HomePage() {
           </div>
         </Container>
       </section>
+
+      <LivingNetwork />
 
       {/* ======================== FEATURED WORK ========================== */}
       <section className="border-b border-line">

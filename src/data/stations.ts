@@ -6,7 +6,7 @@ import { ROUTES } from "./routes";
  * Every story below is drawn from his portfolio, résumé and public
  * repositories (github.com/rilians). Update this file to add new stations.
  */
-export const STATIONS: CareerStation[] = [
+const STATION_RECORDS: CareerStation[] = [
   // ------------------------------------------------------------------
   // ROUTE 01 — BUILD
   // ------------------------------------------------------------------
@@ -383,6 +383,28 @@ export const STATIONS: CareerStation[] = [
     projectIds: [],
   },
 ];
+
+// Legacy records are published, but deliberately have no invented publication date.
+export const STATIONS: CareerStation[] = STATION_RECORDS
+  .filter((station) => station.status !== "draft")
+  .map((station) => ({ ...station, slug: station.slug ?? station.id, status: "published" }));
+
+// Preserve the curated service order, append newly registered stops automatically,
+// and remove unpublished stops from every public route.
+for (const route of ROUTES) {
+  route.stationIds = route.stationIds.filter((id) => STATIONS.some((s) => s.id === id));
+  for (const station of STATIONS) {
+    if (station.routeIds.includes(route.id) && !route.stationIds.includes(station.id)) route.stationIds.push(station.id);
+  }
+}
+
+const ids = new Set<string>();
+const slugs = new Set<string>();
+for (const station of STATION_RECORDS) {
+  const slug = station.slug ?? station.id;
+  if (ids.has(station.id) || slugs.has(slug)) throw new Error(`Duplicate station id or slug: ${station.id}`);
+  ids.add(station.id); slugs.add(slug);
+}
 
 export const STATION_MAP: Record<string, CareerStation> = Object.fromEntries(
   STATIONS.map((s) => [s.id, s]),

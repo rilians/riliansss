@@ -1,3 +1,5 @@
+import { useAnalytics } from "../../lib/analytics";
+import { interestIds } from "../../lib/interest";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { DoorOpen, ImageDown, Loader2, Minus, MoreHorizontal, Plus, RotateCcw, TrainFront, Volume2, VolumeX, X } from "lucide-react";
@@ -52,6 +54,8 @@ const RIDE_COPY: Record<RideState["status"], string> = {
  * train + overlays.
  */
 export default function TransitMap() {
+  const interestFilter = useJourneyStore((s) => s.interestFilter);
+  const analyticsData = useAnalytics((s) => s.data);
   const {
     containerRef,
     t,
@@ -322,6 +326,8 @@ export default function TransitMap() {
             animated
             interactive={!ride}
             routeFilter={routeFilter}
+            interestIds={interestIds(interestFilter, analyticsData)}
+            interestLabel={interestFilter === "new" ? "NEW" : interestFilter === "popular" ? "★" : "↗"}
             selectedId={selectedId}
             hoverId={ride?.status === "dwell" ? ride.station.id : hoverId}
             rideRouteId={ride?.routeId ?? null}

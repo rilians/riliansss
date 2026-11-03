@@ -1,3 +1,5 @@
+import { useAnalytics } from "../../lib/analytics";
+import { interestIds } from "../../lib/interest";
 import { Expand } from "lucide-react";
 import { ROUTES } from "../../data/routes";
 import { STATION_MAP } from "../../data/stations";
@@ -8,6 +10,9 @@ export default function MobileRouteExplorer({
 }: {
   onViewFullMap: () => void;
 }) {
+  const interestFilter = useJourneyStore((state) => state.interestFilter);
+  const data = useAnalytics((state) => state.data);
+  const matches = interestIds(interestFilter, data);
   const routeFilter = useJourneyStore((state) => state.routeFilter);
   const selectedStationId = useJourneyStore((state) => state.selectedStationId);
   const selectStation = useJourneyStore((state) => state.selectStation);
@@ -35,7 +40,7 @@ export default function MobileRouteExplorer({
         {visibleRoutes.map((route) => {
           const stations = route.stationIds
             .map((stationId) => STATION_MAP[stationId])
-            .filter((station) => station !== undefined);
+            .filter((station) => station !== undefined && (!matches || matches.has(station.id)));
 
           return (
             <section key={route.id} aria-labelledby={`mobile-route-${route.id}`}>

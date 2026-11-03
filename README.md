@@ -174,3 +174,16 @@ No map SDKs, no charting libraries — the transit network is a custom renderer.
 - Brighton and Ciel — The Phantomhive Archive are unofficial/fan concept studies,
   credited as such on their case-study landing pages.
 - External links (live deployments, repos, credential verification) open in new tabs.
+
+## Living network: publishing and analytics
+
+The existing `src/data/stations.ts` registry is the source of station identity and content. Add a record there with a unique `id` and optional unique `slug` (defaults to `id`), existing route IDs, coordinates, category, story, skills, and project relationships. Set `status: "draft"` to keep a record out of all public station views. Legacy records default to published for compatibility; they have **no assumed publication date**. On publication, set `status: "published"`, `createdAt` and `publishedAt` separately (ISO 8601, preferably UTC). A station is new for 30 rolling days after publication. The route's curated order is retained; new stops are appended automatically. Adjust route waypoints in `src/data/routes.ts` if a new stop needs a change in the drawn line. Existing links continue to use station IDs.
+
+### Optional Supabase setup
+
+1. Create a Supabase project and run `supabase/living-network.sql` in its SQL editor. This creates `station_catalog` and `station_events`, RLS, a daily uniqueness constraint, date/aggregation indexes, and two restricted RPCs. Raw events are not publicly readable or editable.
+2. Run `npx tsx scripts/station-catalog.ts` locally and execute its SQL output in the SQL editor. Repeat this **at every station publication/unpublication deployment**; it marks absent/draft stations unpublished without deleting historical events. Keep SQL editor access administrative.
+3. Set `VITE_SUPABASE_URL` to the project URL and `VITE_SUPABASE_ANON_KEY` to its public anon/publishable key in your deployment environment (or `.env.local`), then rebuild. Never use the service-role key in the frontend.
+4. Open a published station, inspect `station_events` in the SQL editor, reopen it on the same UTC day, and verify one row. Check `select public.station_analytics();` and reload after the five-minute client cache expires. Test in a second browser profile for another anonymous visitor. Without credentials or on network failure, the site shows unavailable activity rather than invented rankings.
+
+Events use a random first-party UUID stored in localStorage; clearing storage starts a new anonymous identity. Server-assigned UTC dates enforce one event per visitor/station/day. Rankings count distinct visitors across rolling 30-day and 7-day windows; trending requires five current visitors and positive growth. Analytics requests return only aggregate top results. As with any public anonymous endpoint, a determined client can generate identities; use Supabase/API gateway rate limiting and abuse monitoring before relying on these figures for high-stakes decisions. No names, emails, or browser fingerprints are collected.

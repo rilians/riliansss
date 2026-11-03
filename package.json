@@ -13,7 +13,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit --pretty false",
     "lint": "eslint src tests eslint.config.js",
-    "test": "tsx --test tests/unit/journey-store.test.ts",
+    "test": "tsx --test tests/unit/*.test.ts",
     "test:e2e": "node --test tests/e2e/portfolio.test.mjs",
     "render:map": "tsx scripts/preview-map.ts"
   },

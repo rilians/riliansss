@@ -1,3 +1,8 @@
+import { latestStations } from "../lib/living";
+import { Link } from "react-router-dom";
+import { useAnalytics } from "../lib/analytics";
+import { interestIds } from "../lib/interest";
+import type { InterestFilter } from "../store/journey";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useReducedMotion } from "motion/react";
@@ -19,6 +24,13 @@ import { useMediaQuery } from "../hooks/useMediaQuery";
 export default function JourneyPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showFullMap, setShowFullMap] = useState(false);
+  const [newLimit, setNewLimit] = useState(8);
+  const interestFilter = useJourneyStore((s) => s.interestFilter);
+  const setInterestFilter = useJourneyStore((s) => s.setInterestFilter);
+  const analytics = useAnalytics();
+  const loadAnalytics = analytics.load;
+  useEffect(() => { void loadAnalytics(); }, [loadAnalytics]);
+  const matches = interestIds(interestFilter, analytics.data);
   const mode = useJourneyStore((s) => s.mode);
   const routeFilter = useJourneyStore((s) => s.routeFilter);
   const selectedStationId = useJourneyStore((s) => s.selectedStationId);
@@ -33,15 +45,18 @@ export default function JourneyPage() {
 
   // URL -> store (deep links: ?station= &route= &mode=)
   useEffect(() => {
+    const filterParam = searchParams.get("filter");
+    const filter: InterestFilter = filterParam === "new" || filterParam === "popular" || filterParam === "trending" ? filterParam : "all";
+    if (filter !== useJourneyStore.getState().interestFilter) setInterestFilter(filter);
     const routeParam = searchParams.get("route");
     const route = isRouteId(routeParam) ? routeParam : "all";
     if (route !== useJourneyStore.getState().routeFilter) setRouteFilter(route);
 
     const stationId = searchParams.get("station");
-    const station = stationId ? STATION_MAP[stationId] : undefined;
+    const station = stationId ? STATION_MAP[stationId] ?? STATIONS.find((s) => s.slug === stationId) : undefined;
     const stationMatchesRoute =
       station && (route === "all" || station.routeIds.includes(route));
-    const selectedStationId = stationMatchesRoute ? stationId : null;
+    const selectedStationId = stationMatchesRoute ? station.id : null;
     const currentStationId = useJourneyStore.getState().selectedStationId;
     if (selectedStationId !== currentStationId) {
       selectStation(selectedStationId, { zoom: selectedStationId !== null });
@@ -50,7 +65,7 @@ export default function JourneyPage() {
     const urlMode = searchParams.get("mode");
     const nextMode = urlMode === "timeline" ? "timeline" : "map";
     if (nextMode !== useJourneyStore.getState().mode) setMode(nextMode);
-  }, [searchParams, selectStation, setMode, setRouteFilter]);
+  }, [searchParams, selectStation, setMode, setRouteFilter, setInterestFilter]);
 
   // store -> URL (shareable state). Reads fresh store state so the
   // first mount pass can't race the URL->store effect above and strip
@@ -58,15 +73,17 @@ export default function JourneyPage() {
   useEffect(() => {
     const st = useJourneyStore.getState();
     const next = new URLSearchParams();
+    if (st.interestFilter !== "all") next.set("filter", st.interestFilter);
     if (st.selectedStationId) next.set("station", st.selectedStationId);
     if (st.routeFilter !== "all") next.set("route", st.routeFilter);
     if (st.mode !== "map") next.set("mode", st.mode);
     const same =
+      searchParams.get("filter") === next.get("filter") &&
       searchParams.get("station") === next.get("station") &&
       searchParams.get("route") === next.get("route") &&
       searchParams.get("mode") === next.get("mode");
     if (!same) setSearchParams(next, { replace: true });
-  }, [selectedStationId, routeFilter, mode, searchParams, setSearchParams]);
+  }, [selectedStationId, routeFilter, mode, interestFilter, searchParams, setSearchParams]);
 
   const activeRoute = routeFilter !== "all" ? ROUTE_MAP[routeFilter] : null;
 
@@ -108,6 +125,15 @@ export default function JourneyPage() {
           </p>
         </div>
 
+        <div className="flex flex-wrap gap-2 py-3" aria-label="Station interest filters">
+          {(["all", "new", "popular", "trending"] as const).map((filter) => <button key={filter} type="button" aria-pressed={interestFilter === filter} onClick={() => { const next = new URLSearchParams(searchParams); if (filter === "all") next.delete("filter"); else next.set("filter", filter); setSearchParams(next); }} className={cn("min-h-10 border px-3 font-mono text-[10px] uppercase tracking-[0.14em]", interestFilter === filter ? "border-ink bg-ink text-paper" : "border-line hover:border-ink")}>{filter === "all" ? "All stations" : filter}</button>)}
+        </div>
+        {matches && matches.size === 0 && <p role="status" className="pb-3 font-mono text-xs text-muted">{interestFilter !== "new" && analytics.status !== "ready" ? "Network activity is currently unavailable." : "No stations match this filter yet."}</p>}
+        {interestFilter === "new" && matches && matches.size > 0 && <section className="border-t border-line py-5" aria-label="All new stations">
+          <h2 className="font-mono text-xs uppercase tracking-[0.16em]">All new stations</h2>
+          <div className="mt-3 grid gap-x-6 sm:grid-cols-2 lg:grid-cols-3">{latestStations(STATIONS).slice(0, newLimit).map((station) => <Link key={station.id} className="border-b border-line py-3 text-sm hover:text-signal" to={`/journey?filter=new&station=${encodeURIComponent(station.id)}`}>{station.name} <span className="font-mono text-[10px] text-muted">{station.code} · NEW</span></Link>)}</div>
+          {matches.size > newLimit && <button className="mt-4 border border-ink px-4 py-2 font-mono text-xs uppercase" onClick={() => setNewLimit((limit) => limit + 8)}>Load more</button>}
+        </section>}
         <PlannerPanel />
 
         {/* active route description */}
