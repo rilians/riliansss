@@ -50,5 +50,6 @@ export async function trackStation(id: string): Promise<void> {
       method: "POST", headers, body: JSON.stringify({ p_station_id: id, p_visitor_id: visitor }),
     });
     if (!response.ok) sent.delete(eventKey);
+    else lastFetch = 0; // Refresh aggregates on the next visit to the homepage or map.
   } catch { if (eventKey) sent.delete(eventKey); /* Browsing still works offline. */ }
 }
