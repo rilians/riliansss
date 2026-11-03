@@ -67,14 +67,19 @@ function CaseStudyRow({ project, flip, trackColor }: { project: Project; flip: b
         <Link
           to={`/work/${project.id}`}
           viewTransition
-          className={cn("group relative block overflow-hidden border border-ink/15 md:col-span-6", flip && "md:order-2")}
+          className={cn("group relative block overflow-hidden border border-ink/15 md:col-span-6", project.track === "design" && "self-start", flip && "md:order-2")}
           aria-label={`Open case study: ${project.title}`}
         >
           <img
             src={project.image}
             alt={project.imageAlt}
             loading="lazy"
-            className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            className={cn(
+              "block w-full",
+              project.track === "design"
+                ? "h-auto"
+                : "aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]",
+            )}
             style={{ viewTransitionName: `project-${project.id}` }}
           />
         </Link>
@@ -116,12 +121,17 @@ function RecordRow({ project, trackColor }: { project: Project; trackColor: stri
   return (
     <Reveal>
       <div className="grid gap-5 border-b border-line py-8 md:grid-cols-12 md:gap-8">
-        <Link to={`/work/${project.id}`} viewTransition className="group relative block overflow-hidden border border-ink/15 md:col-span-4">
+        <Link to={`/work/${project.id}`} viewTransition className={cn("group relative block overflow-hidden border border-ink/15 md:col-span-4", project.track === "design" && "self-start")}>
           <img
             src={project.image}
             alt={project.imageAlt}
             loading="lazy"
-            className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            className={cn(
+              "block w-full",
+              project.track === "design"
+                ? "h-auto"
+                : "aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.04]",
+            )}
             style={{ viewTransitionName: `project-${project.id}` }}
           />
           <span

@@ -54,7 +54,7 @@ export const ROUTES: CareerRoute[] = [
     color: "#5268AC",
     description:
       "The operations line — delivering a 500+-attendee festival on an IDR 45M budget, coordinating a 30+-member board, and building IT service-desk tooling.",
-    stationIds: ["event-chair", "bem-vice-president", "nusaops", "opis"],
+    stationIds: ["event-chair", "bem-vice-president", "nusaops", "opsflow", "opis"],
     waypoints: [
       [130, 700],
       [450, 700],
