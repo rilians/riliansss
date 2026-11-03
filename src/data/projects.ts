@@ -1,4 +1,5 @@
 import type { Project } from "../types";
+import opsflowImg from "../assets/projects/opsflow-dashboard.png";
 import misiLiveImg from "../assets/projects/misi-live.jpg";
 import signalRoomImg from "../assets/projects/signal-room.jpg";
 import lostArchiveImg from "../assets/projects/lost-archive.jpg";
@@ -80,6 +81,49 @@ export const PROJECTS: Project[] = [
     imageAlt: "Misi Warga Cilik web application running live in the browser",
     demoUrl: "https://misi-warga-cilik.vercel.app/",
     repoUrl: "https://github.com/rilians/misi-warga-cilik",
+  },
+  {
+    id: "opsflow",
+    index: "18",
+    title: "OpsFlow",
+    category: "BAU Automation · Control Tower",
+    classification: "Independent Build",
+    year: "2026",
+    role: "Product Design & Frontend Engineering",
+    status: "Live · Open source demo",
+    track: "react",
+    badges: ["Live demo", "Open source", "Simulated data"],
+    routeId: "support",
+    caseStudy: true,
+    featured: true,
+    summary:
+      "A browser-based operations control tower for business-as-usual work, combining task management, SLA monitoring, workflow automation and analytics in an interactive demo.",
+    description:
+      "OpsFlow explores how teams can coordinate operational requests in one workspace. Its task board, automation rules, workflows and reporting share a seeded dataset in the browser; actions update that local workspace rather than a production backend.",
+    problem:
+      "Routine operational work can become difficult to follow when requests, ownership, deadlines and follow-up are scattered across tools. OpsFlow explores a single view of those moving parts.",
+    objectives: [
+      "Bring requests, ownership and SLA health into a unified control tower",
+      "Make rule-based automation and its execution history inspectable",
+      "Connect workflows, notifications and analytics to the same demo workspace",
+      "Distinguish working browser interactions from simulated or unconnected services",
+    ],
+    stack: ["React", "TypeScript", "Vite", "Tailwind CSS", "Recharts", "localStorage"],
+    process: [
+      { title: "Model the workspace", text: "Organized tasks, users, SLA policies, workflow definitions and automation rules around a shared seeded dataset." },
+      { title: "Connect the operational flow", text: "Built a browser-based rule engine that can validate, assign, remind and escalate requests while recording executions and notifications." },
+      { title: "Make the demo inspectable", text: "Added dashboards, reports, exports and a demonstration scenario, with labels distinguishing local interactions from external integrations and scheduled processing." },
+    ],
+    results: [
+      "A public demo with task, workflow, automation, SLA and reporting views",
+      "Interactive rule execution and calculations driven by the browser's demo workspace",
+      "Documented limitations: synthetic data, local persistence and no server-side authentication",
+    ],
+    lessons: "An operations interface is more credible when its actions, data sources and limitations are visible alongside its metrics.",
+    image: opsflowImg,
+    imageAlt: "OpsFlow executive overview showing a demonstration operations dashboard with tasks, SLA health and automation activity",
+    demoUrl: "https://opsflow-one.vercel.app/dashboard",
+    repoUrl: "https://github.com/rilians/opsflow",
   },
   {
     id: "signal-room",

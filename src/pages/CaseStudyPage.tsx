@@ -69,13 +69,13 @@ export default function CaseStudyPage() {
       setMeta('meta[property="og:title"]', "Egi Apriliansyah — LIFE IN ROUTES");
       setMeta(
         'meta[property="og:description"]',
-        "A career drawn as a metro map: 15 stations, 4 lines, rideable trains. The interactive portfolio of Egi Apriliansyah.",
+        "A career drawn as a metro map: 16 stations, 4 lines, rideable trains. The interactive portfolio of Egi Apriliansyah.",
       );
       setMeta('meta[property="og:url"]', "https://riliansss.vercel.app/");
       setMeta('meta[name="twitter:title"]', "Egi Apriliansyah — LIFE IN ROUTES");
       setMeta(
         'meta[name="twitter:description"]',
-        "A career drawn as a metro map: 15 stations, 4 lines, rideable trains.",
+        "A career drawn as a metro map: 16 stations, 4 lines, rideable trains.",
       );
       if (canonical && previousUrl) canonical.href = previousUrl;
     };
@@ -249,6 +249,11 @@ export default function CaseStudyPage() {
           ))}
         </div>
 
+        {project.id === "opsflow" && (
+          <aside role="note" className="mt-5 border-2 border-express bg-card px-4 py-3 font-mono text-[10px] font-semibold uppercase leading-relaxed tracking-[0.12em] text-ink sm:text-[11px]">
+            Demo with synthetic data and browser-local storage — not a production service. External integrations and server-side authentication are not connected.
+          </aside>
+        )}
         {project.id === "signal-room" && (
           <aside
             role="note"
@@ -261,11 +266,11 @@ export default function CaseStudyPage() {
 
       {/* hero image */}
       <Container>
-        <div className="border border-ink/15">
+        <div className={project.track === "design" ? "flex justify-center border border-ink/15 bg-card" : "border border-ink/15"}>
           <img
             src={project.image}
             alt={project.imageAlt}
-            className="aspect-[21/9] w-full object-cover"
+            className={project.track === "design" ? "block h-auto max-h-[80vh] max-w-full object-contain" : "aspect-[21/9] w-full object-cover"}
             style={{ viewTransitionName: `project-${project.id}` }}
           />
         </div>

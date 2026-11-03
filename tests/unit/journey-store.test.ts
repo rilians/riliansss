@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { beforeEach, describe, it } from "node:test";
 import { isRouteId, ROUTES } from "../../src/data/routes";
-import { STATIONS } from "../../src/data/stations";
+import { STATIONS, STATION_MAP, getNeighbors } from "../../src/data/stations";
 import { useJourneyStore } from "../../src/store/journey";
 
 function resetJourney() {
@@ -15,6 +15,15 @@ function resetJourney() {
 }
 
 describe("journey route and station state", () => {
+  it("connects OpsFlow to its support line and project identity", () => {
+    const station = STATION_MAP.opsflow;
+    assert.equal(station.code, "ST-16");
+    assert.deepEqual(station.projectIds, ["opsflow"]);
+    assert.deepEqual(station.routeIds, ["support"]);
+    assert.equal(getNeighbors("opsflow").prev?.id, "nusaops");
+    assert.equal(getNeighbors("opsflow").next?.id, "opis");
+  });
+
   beforeEach(resetJourney);
 
   it("only accepts explicit route ids from URL parameters", () => {

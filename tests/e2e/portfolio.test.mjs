@@ -56,6 +56,13 @@ test("recruiter paths and responsive journey explorer work", async () => {
   ).waitFor();
   assert.match(await page.title(), /SIGNAL ROOM/);
 
+  await page.goto(`${baseUrl}/work/opsflow`);
+  await page.getByRole("heading", { name: "OpsFlow" }).first().waitFor();
+  await page.getByRole("note").getByText(/Demo with synthetic data/).waitFor();
+  assert.equal(await page.getByRole("link", { name: /open web demo/i }).first().getAttribute("href"), "https://opsflow-one.vercel.app/dashboard");
+  await page.goto(`${baseUrl}/journey?station=opsflow&route=support`);
+  await page.getByRole("heading", { name: "OpsFlow" }).waitFor();
+
   await page.goto(`${baseUrl}/journey?station=nusaops&route=support`);
   await page.getByRole("heading", { name: "NusaOps" }).waitFor();
   await page.getByRole("button", { name: "01 Build" }).click();
@@ -145,4 +152,26 @@ test("recruiter paths and responsive journey explorer work", async () => {
   assert.deepEqual(pageErrors, []);
   await mobile.close();
   await page.close();
+});
+
+test("design posters retain their native aspect ratio on gallery and detail views", async () => {
+  for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
+    const page = await browser.newPage({ viewport });
+    await page.goto(`${baseUrl}/work`);
+    await page.getByRole("button", { name: /Line D · Design/ }).click();
+    const posterLinks = page.locator('a[href^="/work/"] img');
+    assert.equal(await posterLinks.count(), 3);
+    for (const image of await posterLinks.all()) {
+      await image.scrollIntoViewIfNeeded();
+      await image.evaluate((img) => img.decode());
+      const sizes = await image.evaluate((img) => ({ natural: img.naturalWidth / img.naturalHeight, rendered: img.getBoundingClientRect().width / img.getBoundingClientRect().height }));
+      assert.ok(Math.abs(sizes.natural - sizes.rendered) < 0.01, "gallery poster must not be cropped");
+    }
+    await page.goto(`${baseUrl}/work/alexander`);
+    const hero = page.locator('img[alt*="Alexander"]').first();
+    await hero.evaluate((img) => img.decode());
+    const sizes = await hero.evaluate((img) => ({ natural: img.naturalWidth / img.naturalHeight, rendered: img.getBoundingClientRect().width / img.getBoundingClientRect().height }));
+    assert.ok(Math.abs(sizes.natural - sizes.rendered) < 0.01, "detail poster must not be cropped");
+    await page.close();
+  }
 });
