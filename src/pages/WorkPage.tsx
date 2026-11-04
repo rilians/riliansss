@@ -192,7 +192,7 @@ export default function WorkPage() {
               rides its own line<span className="text-signal">.</span>
             </h1>
             <p className="max-w-sm text-[15px] leading-relaxed text-ink/70">
-              {PROJECTS.length} projects across three technology tracks — each entry
+              {PROJECTS.length} projects across {TRACKS.length} technology tracks — each entry
               with its story, live demo and repository. New stacks will open new
               lines as the network grows.
             </p>

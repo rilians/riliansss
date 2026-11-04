@@ -22,7 +22,16 @@ export const TRACKS: WorkTrack[] = [
     tagline: "Products & browser-native experiences",
     color: "#F06442",
     description:
-      "Shipped products and experimental interfaces built with React and Next.js — Motion, Three.js, canvas work and interactions that treat the browser as a material.",
+      "Browser-native products and experiments built with React — Motion, Three.js, canvas work and interfaces that treat the browser as a material.",
+  },
+  {
+    id: "next",
+    code: "N",
+    name: "Next.js Applications",
+    tagline: "Full-stack products & web applications",
+    color: "#387D78",
+    description:
+      "Applications built with Next.js — from mobile-first learning experiences to process intelligence and connected workspaces.",
   },
   {
     id: "python",

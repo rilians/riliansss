@@ -50,11 +50,25 @@ test("recruiter paths and responsive journey explorer work", async () => {
   await page.goto(`${baseUrl}/work`);
   await page.getByText("Freelance / Client Work").first().waitFor();
   await page.getByText("Independent Build").first().waitFor();
+  await page.getByRole("button", { name: /Line N · Next/ }).click();
+  await page.getByRole("heading", { name: "FLOWPRINT" }).waitFor();
+  await page.getByRole("heading", { name: "Misi Warga Cilik" }).waitFor();
+  assert.equal(await page.getByRole("heading", { name: "OpsFlow" }).count(), 0);
+  await page.getByRole("button", { name: /Line R · React/ }).click();
+  await page.getByRole("heading", { name: "OpsFlow" }).waitFor();
+  assert.equal(await page.getByRole("heading", { name: "FLOWPRINT" }).count(), 0);
   await page.goto(`${baseUrl}/work/signal-room`);
   await page.getByRole("note").getByText(
     "Simulated demo data — not actual client campaign results",
   ).waitFor();
   assert.match(await page.title(), /SIGNAL ROOM/);
+
+  await page.goto(`${baseUrl}/work/flowprint`);
+  await page.getByRole("heading", { name: "FLOWPRINT" }).first().waitFor();
+  await page.getByRole("note").getByText(/Demo data is illustrative/).waitFor();
+  assert.equal(await page.getByRole("link", { name: /open web demo/i }).first().getAttribute("href"), "https://flowprint-orpin.vercel.app/");
+  await page.goto(`${baseUrl}/journey?station=flowprint&route=explore`);
+  await page.getByRole("heading", { name: "FLOWPRINT" }).waitFor();
 
   await page.goto(`${baseUrl}/work/opsflow`);
   await page.getByRole("heading", { name: "OpsFlow" }).first().waitFor();
@@ -92,7 +106,7 @@ test("recruiter paths and responsive journey explorer work", async () => {
 
   await page.goto(`${baseUrl}/journey`);
   await search.fill("Independent Build");
-  await page.getByRole("option", { name: /NusaOps Independent Build/ }).waitFor();
+  await page.getByRole("option", { name: /FLOWPRINT Independent Build/ }).waitFor();
 
   await page.goto(`${baseUrl}/journey?station=nusaops`);
   await page.getByRole("heading", { name: "NusaOps" }).waitFor();

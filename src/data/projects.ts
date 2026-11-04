@@ -1,4 +1,5 @@
 import type { Project } from "../types";
+import flowprintImg from "../assets/projects/flowprint-dashboard.png";
 import opsflowImg from "../assets/projects/opsflow-dashboard.png";
 import misiLiveImg from "../assets/projects/misi-live.jpg";
 import signalRoomImg from "../assets/projects/signal-room.jpg";
@@ -38,7 +39,7 @@ export const PROJECTS: Project[] = [
     year: "2026",
     role: "Freelance Full-Stack Developer",
     status: "Shipped · Live",
-    track: "react",
+    track: "next",
     badges: ["Shipped product", "Live"],
     routeId: "build",
     caseStudy: true,
@@ -124,6 +125,46 @@ export const PROJECTS: Project[] = [
     imageAlt: "OpsFlow executive overview showing a demonstration operations dashboard with tasks, SLA health and automation activity",
     demoUrl: "https://opsflow-one.vercel.app/dashboard",
     repoUrl: "https://github.com/rilians/opsflow",
+  },
+  {
+    id: "flowprint",
+    index: "19",
+    title: "FLOWPRINT",
+    category: "Process Intelligence · Improvement Design",
+    classification: "Independent Build",
+    year: "2026",
+    role: "Product Design & Full-Stack Engineering",
+    status: "Live · Open source",
+    track: "next",
+    badges: ["Live demo", "Open source", "Illustrative data"],
+    routeId: "explore",
+    caseStudy: true,
+    featured: true,
+    summary: "A process-intelligence workspace for mapping existing workflows, discovering improvement opportunities, and comparing proposed scenarios before implementation.",
+    description: "FLOWPRINT connects As-Is process maps, operational analysis, transparent heuristic opportunity scoring, an editable To-Be simulator, and executive reporting. Its signed-out demo uses illustrative data; signed-in workspaces can use Supabase cloud storage.",
+    problem: "Improvement conversations can be hard to ground when process steps, handoffs, effort and assumptions are scattered across documents. FLOWPRINT brings the baseline and proposed changes into a shared, inspectable workflow.",
+    objectives: [
+      "Make process steps, roles, effort and waiting time visible in a workflow canvas",
+      "Surface improvement opportunities with explainable heuristic scores",
+      "Compare editable To-Be scenarios against the baseline using explicit assumptions",
+      "Prepare an executive report without presenting estimates as measured outcomes",
+    ],
+    stack: ["Next.js", "React", "TypeScript", "Supabase", "Zustand", "React Flow"],
+    process: [
+      { title: "Map the baseline", text: "Built an As-Is workflow canvas with activity and waiting-time context, connected to operational calculations." },
+      { title: "Find opportunities", text: "Added transparent heuristic scoring to prioritize potential improvements, with optional AI suggestions that require review." },
+      { title: "Compare and report", text: "Created editable To-Be scenarios and before-and-after estimates, followed by an executive report with export and print options." },
+    ],
+    results: [
+      "A public process-improvement workspace with a browser-local demo and optional authenticated cloud storage",
+      "Connected workflow mapping, heuristic analysis, scenario modeling and reporting",
+      "Illustrative demo data and assumption-based estimates are clearly distinguished from measured business outcomes",
+    ],
+    lessons: "A useful process model makes its assumptions visible: proposed savings and heuristic scores are inputs for discussion, not guarantees of implementation success.",
+    image: flowprintImg,
+    imageAlt: "FLOWPRINT dashboard in demo mode showing process summaries and heuristic improvement opportunities",
+    demoUrl: "https://flowprint-orpin.vercel.app/",
+    repoUrl: "https://github.com/rilians/flowprint",
   },
   {
     id: "signal-room",

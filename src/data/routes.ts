@@ -72,7 +72,7 @@ export const ROUTES: CareerRoute[] = [
     color: "#E4BD52",
     description:
       "The frontier line — Scrum, networking and Python certifications, independent data tooling, creative-coding experiments, and this portfolio itself.",
-    stationIds: ["certifications", "data-tools", "creative-coding", "life-in-routes"],
+    stationIds: ["certifications", "data-tools", "creative-coding", "flowprint", "life-in-routes"],
     waypoints: [
       [150, 240],
       [595, 240],
