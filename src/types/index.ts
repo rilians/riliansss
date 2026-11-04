@@ -1,7 +1,7 @@
 export type RouteId = "build" | "connect" | "support" | "explore";
 
 /** Technology tracks used by the Selected Works gallery. */
-export type TrackId = "react" | "python" | "design";
+export type TrackId = "react" | "next" | "python" | "design";
 export type ProjectClassification =
   | "Freelance / Client Work"
   | "Academic Project"

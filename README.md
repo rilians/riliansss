@@ -104,16 +104,7 @@ Zero config needed.
 **Everywhere else**
 
 - ⌘K command palette: pages, routes, stations, projects
-- **All 17 projects** in the works gallery, organised as technology tracks:
-  **Line R — React & Interactive Web** (8: Misi Warga Cilik, Signal Room,
-  The Lost Archive, Sonopolis, Orbital, Fold, Re:object, Little Ecosystem),
-  **Line P — Python & Data Systems** (6: NusaOps, Valido, Opis, Navigo,
-  Vanguardia, Axon), **Line D — Design & Editorial** (3: Alexander, Brighton,
-  Ciel — The Phantomhive Archive). Every entry shows its story, live demo and
-  repository; consistent labels distinguish freelance/client work,
-  independent builds, experimental studies, and fan concepts. SIGNAL ROOM
-  visibly identifies its simulated metrics; deep case studies and screenshots
-  remain intact.
+- **Selected Works** are organised into four technology tracks: **Line R — React & Interactive Web**, **Line N — Next.js Applications**, **Line P — Python & Data Systems**, and **Line D — Design & Editorial**. The gallery counts projects dynamically; entries include their story and available demo and repository links. Demo and illustrative data are identified clearly.
 - About page: highlights band (25 committee · IDR 45M · 500+ · GPA 3.61),
   real portrait & photo frames, approach, skill clusters, verifiable
   certifications (Credly/SCRUMstudy/UniAthena links), education, interests

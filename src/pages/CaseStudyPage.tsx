@@ -69,13 +69,13 @@ export default function CaseStudyPage() {
       setMeta('meta[property="og:title"]', "Egi Apriliansyah — LIFE IN ROUTES");
       setMeta(
         'meta[property="og:description"]',
-        "A career drawn as a metro map: 16 stations, 4 lines, rideable trains. The interactive portfolio of Egi Apriliansyah.",
+        "A career drawn as a metro map: 17 stations, 4 lines, rideable trains. The interactive portfolio of Egi Apriliansyah.",
       );
       setMeta('meta[property="og:url"]', "https://riliansss.vercel.app/");
       setMeta('meta[name="twitter:title"]', "Egi Apriliansyah — LIFE IN ROUTES");
       setMeta(
         'meta[name="twitter:description"]',
-        "A career drawn as a metro map: 16 stations, 4 lines, rideable trains.",
+        "A career drawn as a metro map: 17 stations, 4 lines, rideable trains.",
       );
       if (canonical && previousUrl) canonical.href = previousUrl;
     };
@@ -249,6 +249,11 @@ export default function CaseStudyPage() {
           ))}
         </div>
 
+        {project.id === "flowprint" && (
+          <aside role="note" className="mt-5 border-2 border-express bg-card px-4 py-3 font-mono text-[10px] font-semibold uppercase leading-relaxed tracking-[0.12em] text-ink sm:text-[11px]">
+            Demo data is illustrative. Opportunity scores are heuristic and scenario savings are estimates, not measured business outcomes.
+          </aside>
+        )}
         {project.id === "opsflow" && (
           <aside role="note" className="mt-5 border-2 border-express bg-card px-4 py-3 font-mono text-[10px] font-semibold uppercase leading-relaxed tracking-[0.12em] text-ink sm:text-[11px]">
             Demo with synthetic data and browser-local storage — not a production service. External integrations and server-side authentication are not connected.

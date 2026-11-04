@@ -15,6 +15,15 @@ function resetJourney() {
 }
 
 describe("journey route and station state", () => {
+  it("connects FLOWPRINT to the explore route and its project", () => {
+    const station = STATION_MAP.flowprint;
+    assert.equal(station.code, "ST-17");
+    assert.deepEqual(station.projectIds, ["flowprint"]);
+    assert.deepEqual(station.routeIds, ["explore"]);
+    assert.equal(getNeighbors("flowprint").prev?.id, "creative-coding");
+    assert.equal(getNeighbors("flowprint").next?.id, "life-in-routes");
+  });
+
   it("connects OpsFlow to its support line and project identity", () => {
     const station = STATION_MAP.opsflow;
     assert.equal(station.code, "ST-16");
