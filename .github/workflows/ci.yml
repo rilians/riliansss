@@ -19,4 +19,16 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-      - run: npm run test:e2e
+      - name: Run browser tests
+        run: |
+          set -o pipefail
+          if npm run test:e2e 2>&1 | tee /tmp/portfolio-e2e.log; then
+            exit 0
+          else
+            details=$(tail -n 100 /tmp/portfolio-e2e.log)
+            details="${details//'%'/'%25'}"
+            details="${details//$'\n'/'%0A'}"
+            details="${details//$'\r'/'%0D'}"
+            echo "::error title=Browser tests failed::$details"
+            exit 1
+          fi
